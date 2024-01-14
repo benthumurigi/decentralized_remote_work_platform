@@ -4,7 +4,14 @@
   "description": "A decentralized platform that connects remote workers with employers securely.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dfx_install": "DFX_VERSION=0.15.1 sh -ci \"$(curl -fsSL https://sdk.dfinity.org/install.sh)\"",
+    "replica_start": "dfx start --background",
+    "replica_stop": "dfx stop",
+    "canister_deploy_local": "dfx deploy decentralized_remote_work_platform",
+    "canister_deploy_mainnet": "dfx deploy --network ic decentralized_remote_work_platform",
+    "canister_uninstall": "dfx canister uninstall-code decentralized_remote_work_platform",
+    "canister_call_get_message": "dfx canister call decentralized_remote_work_platform getMessage",
+    "canister_call_set_message": "dfx canister call decentralized_remote_work_platform setMessage '(\"Hello world!\")'"
   },
   "repository": {
     "type": "git",
@@ -22,5 +29,8 @@
   "bugs": {
     "url": "https://github.com/benthumurigi/decentralized_remote_work_platform.git/issues"
   },
-  "homepage": "https://github.com/benthumurigi/decentralized_remote_work_platform.git#readme"
+  "homepage": "https://github.com/benthumurigi/decentralized_remote_work_platform.git#readme",
+  "dependencies": {
+    "azle": "0.19.0"
+  }
 }

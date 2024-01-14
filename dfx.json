@@ -1,0 +1,13 @@
+{
+    "canisters": {
+        "decentralized_remote_work_platform": {
+            "type": "custom",
+            "main": "src/index.ts",
+            "candid": "src/index.did",
+            "build": "npx azle decentralized_remote_work_platform",
+            "wasm": ".azle/decentralized_remote_work_platform/decentralized_remote_work_platform.wasm",
+            "gzip": true
+        }
+    }
+}
+
