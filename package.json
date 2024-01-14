@@ -1,0 +1,26 @@
+{
+  "name": "decentralized_remote_work_platform",
+  "version": "1.0.0",
+  "description": "A decentralized platform that connects remote workers with employers securely.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benthumurigi/decentralized_remote_work_platform.git"
+  },
+  "keywords": [
+    "decentralized",
+    "remote",
+    "workers",
+    "employers",
+    "platform"
+  ],
+  "author": "benthumurigi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/benthumurigi/decentralized_remote_work_platform.git/issues"
+  },
+  "homepage": "https://github.com/benthumurigi/decentralized_remote_work_platform.git#readme"
+}
