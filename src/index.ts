@@ -190,6 +190,29 @@ export default Canister({
         }
     }),
 
+	getTalentInfo: query([Principal], Result(TalentInfo, Error), (talent) => {
+		try {
+			const info = talentStorage.get(ic.caller());
+			if(!('None' in info)){
+				return {
+					id: talent,
+					name: info.name,
+					skills: info.skills,
+					hourlyRate: info.hourlyRate,
+					completedJobs: info.completedJobs,
+					totalRating: info.totalRating,
+					totalEarned: info.totalEarned,
+					feedbacks: info.feedbacks,
+				};
+			}
+	
+			return Err({ BadRequest: "Talent does not exist" });
+		} catch (error) {
+			// Handle Errors
+            return Err({ InternalError: `${error}` });
+		}
+	}),
+
 	
 });
 
