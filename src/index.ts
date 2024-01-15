@@ -161,6 +161,35 @@ export default Canister({
 		}
 	}),
 
-    
+    addTalent: update([TalentPayload], Result(Talent, Error), (payload) => {
+        try {
+            // If talent already exists, return error.
+            if (talentStorage.containsKey(ic.caller())) {
+                return Err({ BadRequest: 'You already have a talent account' });
+            }
+
+            // Create new talent
+            talentStorage.insert(ic.caller(), {
+                id: ic.caller(),
+                role: UserRole.TALENT,
+                name: payload.name,
+                skills: [],
+                hourlyRate: None,
+                completedJobs: [],
+                totalRating: None,
+                totalEarned: None,
+                feedbacks: [],
+                createdAt: ic.time(),
+                updatedAt: ic.time(),
+            });
+
+            return Ok(talentStorage.get(ic.caller()));
+        } catch (error) {
+            // Handle Errors
+            return Err({ InternalError: `${error}` });
+        }
+    }),
+
+	
 });
 
