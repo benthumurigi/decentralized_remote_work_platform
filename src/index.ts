@@ -23,7 +23,19 @@ interface Talent = {
     totalRating: Opt(nat64),
     totalEarned: Opt(nat64),
     feedbacks: Vec(Principal),
+    createdAt: nat64,
+    updatedAt: nat64,
 };
+interface TalentInfo = {
+	id: Principal,
+    name: text,
+    skills: Vec(text),
+    hourlyRate: nat64,
+    completedJobs: Vec(text),
+    avgRating: nat64,
+    totalEarned: nat64,
+    feedbacks: Vec(Principal),
+}
 interface TalentPayload = {
     name: text,
     hourlyRate: nat64,
@@ -32,7 +44,14 @@ interface TalentPayload = {
 interface Feedback = {
     id: Principal,
     feedback: text,
-}
+	owner: Principal,
+    createdAt: nat64,
+    updatedAt: nat64,
+};
+interface FeedbackInfo = {
+    id: Principal,
+    feedback: text,
+};
 
 interface Job = {
     id: text,
@@ -45,7 +64,21 @@ interface Job = {
     status: JobStatus,
     clientRating: Opt(nat64),
     clientFeedback: Opt(Principal),
+    createdAt: nat64,
+    updatedAt: nat64,
 };
+interface JobInfo = {
+	id: text,
+    title: text,
+    description: text,
+    owner: Principal,
+    budget: nat64,
+    bids: Vec(Record({ talentId: Principal, bidText: text, bidAmount: nat64 })),
+    assignedTalent: Opt(Principal),
+    status: JobStatus,
+    clientRating: Opt(nat64),
+    clientFeedback: Opt(Principal),
+}
 interface JobPayload = {
     title: text,
     description: text,
@@ -57,7 +90,14 @@ interface Client = {
     name: text,
     completedJobs: Vec(text),
     totalSpent: Opt(nat64),
-    feedbacks: Vec(Principal),
+    createdAt: nat64,
+    updatedAt: nat64,
+};
+interface ClientInfo = {
+    id: Principal,
+    name: text,
+    completedJobs: Vec(text),
+    totalSpent: Opt(nat64),
 };
 interface ClientPayload = {
     name: text,
@@ -79,6 +119,48 @@ const Error = Variant({
 });
 
 export default Canister({
-    get
+    getProfileInfo: query([], Result(TalentInfo | ClientInfo, Error), () => {
+		try{
+			let user = talentStorage.get(ic.caller());
+			if ('None' in user) {
+				user = clientStorage.get(ic.caller());
+			}
+
+			if ('None' in user) {
+				return Err({ Unauthorized: 'Create an account first.' });
+			}
+			
+			if(user.role === UserRole.TALENT){
+				const avgRtn = Math.ceil(user.totalRating / user.completedJobs.length());
+				return {
+					id: ic.caller(),
+					name: user.name,
+					skills: user.skills,
+					hourlyRate: user.hourlyRate,
+					completedJobs: user.completedJobs,
+					avgRating: avgRtn,
+					totalEarned: user.totalEarned,
+					feedbacks: user.feedbacks,
+				};
+			}
+
+			if(user.role === UserRole.CLIENT){
+				return {
+					id: ic.caller(),
+					name: user.name,
+					completedJobs: user.completedJobs,
+					totalSpent: user.totalSpent,
+					feedbacks: user.feedbacks,
+				};
+			}
+
+			return Err({ Unauthorized: 'Create an account first.' });
+		}catch(error){
+			// Handle Errors
+            return Err({ InternalError: `${error}` });
+		}
+	}),
+
+    
 });
 
