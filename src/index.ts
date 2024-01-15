@@ -213,6 +213,39 @@ export default Canister({
 		}
 	}),
 
-	
+	getTalentJobs: query([Principal], Result(Vec(JobInfo), Error), (talent) => {
+		try {
+			const info = talentStorage.get(talent);
+			if(!('None' in info)){
+				const jobs = [];
+				info.completedJobs.forEach(job => {
+					jobs.push({
+						id: job.id,
+						title: job.title,
+						description: job.description,
+						owner: job.owner,
+						budget: job.budget,
+						bids: job.bids,
+						assignedTalent: job.assignedTalent,
+						status: job.status,
+						clientRating: job.clientRating,
+						clientFeedback: job.clientFeedback,
+					});
+				});
+
+				return jobs;
+			}
+
+			return Err({ BadRequest: "Talent does not exist." });
+		} catch (error) {
+			// Handle Errors
+            return Err({ InternalError: `${error}` });
+		}
+	});
+
+	// getTalentClients
+	// getAllTalents
+	// changeName
+	// changeHourlyRate
 });
 
